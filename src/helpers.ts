@@ -38,7 +38,6 @@ export const checkersFor = (chain: any) => {
   const checkLast = (word: string) => isEqual(chain.pop(), word);
 
   const checkTerminators = (first: string, last: string) => {
-    console.log("checkTerminators", { first, last });
     isChain();
     checkFirst(first);
     checkLast(last);
@@ -47,11 +46,14 @@ export const checkersFor = (chain: any) => {
   return { isChain, checkFirst, checkLast, checkTerminators };
 };
 
-export const createChecker = (textTree: any) => (
+export const createChecker = (textTree: any, opts: any = {}) => (
   first: string,
   last: string
 ) => {
+  const { runBefore, runAfter } = opts;
+  const beforeResult = runBefore && runBefore({ first, last });
   const chain = wordChain(textTree, first, last);
+  runAfter && runAfter(beforeResult, { first, last });
   const { checkTerminators } = checkersFor(chain);
   return checkTerminators;
 };
