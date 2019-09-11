@@ -10,40 +10,39 @@ describe("Text tree", function () {
     it("initialise from dictionary", function (done) {
         tree = new TextTree_1.TextTree();
         helpers_1.exist(tree);
-        tree.initialise(helpers_2.dictionaryFilePath, function (err, lineCount) {
+        var callback = function (err, lineCount) {
             helpers_1.notExist(err);
             helpers_1.exist(lineCount);
             helpers_1.isNumber(lineCount);
             done();
-        });
+        };
+        tree.initialise(helpers_2.dictionaryFilePath, { callback: callback });
     });
 });
 var createAndCheck = null;
 describe("Word chain solver", function () {
-    beforeEach(function (done) {
+    beforeAll(function (done) {
         tree = new TextTree_1.TextTree();
         createAndCheck = helpers_1.createChecker(tree, { runBefore: effects_1.runBefore, runAfter: effects_1.runAfter });
-        tree.initialise(helpers_2.dictionaryFilePath, function (err, lineCount) {
+        var callback = function () {
             done();
-        });
+        };
+        tree.initialise(helpers_2.dictionaryFilePath, { callback: callback });
     });
     it("not create chain for invalid words", function () {
         var chain = word_chain_1.wordChain(tree, "xxxxx", "zzzzz");
         helpers_1.notExist(chain);
     });
-    it("create a word chain", function () {
-        createAndCheck("lead", "gold");
+    it("lead => gold", function () {
+        createAndCheck({ first: "lead", last: "gold" });
     });
-    it("create a word chain", function () {
-        createAndCheck("market", "barter");
+    it("ruby => code", function () {
+        createAndCheck({ first: "ruby", last: "code" });
     });
-    it("create a word chain", function () {
-        createAndCheck("carry", "sough");
+    it("travel => market", function () {
+        createAndCheck({ first: "travel", last: "market" });
     });
-    it("create a word chain", function () {
-        createAndCheck("bread", "table");
-    });
-    it("create a word chain", function () {
-        createAndCheck("travel", "market");
-    });
+    // it("create a word chain from pair", () => {
+    //   createAndCheck({ pair: ["travel", "market"] });
+    // });
 });

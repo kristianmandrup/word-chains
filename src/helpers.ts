@@ -46,14 +46,40 @@ export const checkersFor = (chain: any) => {
   return { isChain, checkFirst, checkLast, checkTerminators };
 };
 
-export const createChecker = (textTree: any, opts: any = {}) => (
-  first: string,
-  last: string
+type checkerArgs = {
+  first?: string;
+  last?: string;
+  pair?: string[];
+};
+
+export const createPairsChecker = (textTree: any, opts: any) => (
+  pairs: any[]
 ) => {
+  const checker = createChecker(textTree, opts);
+  pairs.map(pair => checker({ pair }));
+};
+
+export const createChecker = (textTree: any, opts: any = {}) => ({
+  first,
+  last,
+  pair
+}: checkerArgs = {}) => {
   const { runBefore, runAfter } = opts;
-  const beforeResult = runBefore && runBefore({ first, last });
-  const chain = wordChain(textTree, first, last);
-  chain && runAfter && runAfter(beforeResult, { chain, first, last });
+  const firstWord = first || (pair && pair[0]);
+  const lastWord = last || (pair && pair[1]);
+  // console.log({ firstWord, lastWord });
+  if (!firstWord) {
+    console.error("Missing first word", { first, pair });
+    throw Error("Missing first word");
+  }
+  if (!lastWord) {
+    console.error("Missing last word", { first, pair });
+    throw Error("Missing last word");
+  }
+  const args = { first: firstWord, last: lastWord };
+  const beforeResult = runBefore && runBefore(args);
+  const chain = wordChain(textTree, firstWord, lastWord);
+  chain && runAfter && runAfter(beforeResult, { chain, ...args });
   const { checkTerminators } = checkersFor(chain);
   return checkTerminators;
 };

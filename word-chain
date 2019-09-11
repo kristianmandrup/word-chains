@@ -1,6 +1,30 @@
 #!/usr/bin/env node
 
 const argv = require('yargs').argv
-const { run } = require('./dist/runner')
+const { FileLineReader } = require('./dist/FileLineReader')
+const { checkerFor } = require('./dist/runner')
+const { dictFile, first, last, pair, pairFile } = argv
 
-run(argv)
+const firstLastPair = first && last && [first, last]
+const pairs = pair || firstLastPair || []
+
+if (!dictFile) {
+    throw Error('Missing dictFile argument --dict-file')
+}
+
+if (pairFile) {
+    console.log('loading word pairs from word pair file', pairFile)    
+    const onLine = (line) => {
+        const words = line.split(' ')
+        // console.log('read pair', words.join(','))
+        pairs.push(words);
+        // console.log(pairs)
+    }
+    new FileLineReader(pairFile, { onLine });
+}
+
+const callback = (pairsChecker) => {
+    pairsChecker(pairs)
+};
+
+const checkWordPairs = checkerFor({dictFile, callback})

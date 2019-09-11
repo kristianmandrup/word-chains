@@ -13,7 +13,7 @@ export const runAfter = (
 ) => {
   const time = new Date().getTime();
   const diffTime = time - beforeTime;
-  const chainWrds = `${first}-${last}`;
+  const chainWrds = `${first} => ${last}`;
   const chainLength = chain.length;
   const chainComma = chain.join(",");
   console.log(chainWrds);

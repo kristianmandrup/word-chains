@@ -1,6 +1,4 @@
-import * as fs from "fs";
-import * as path from "path";
-import * as readline from "readline";
+import { FileLineReader } from "./FileLineReader";
 
 // Character to insert in tree where a word ends
 const wordTerminatorChar = "\n";
@@ -11,8 +9,6 @@ const wordTerminatorChar = "\n";
  * @param {Error} err Node Error
  * @param {number} lineCount number of lines read
  */
-
-type Callback = (...args: any[]) => void;
 
 export class TextTree {
   tree: any;
@@ -30,36 +26,10 @@ export class TextTree {
    * @param {loadCallback} callback tree loaded callback
    * @returns {undefined}
    */
-  initialise(filePath: string, callback: Callback) {
+  initialise(filePath: string, opts: any) {
     this.tree = {};
-    fs.open(filePath, "r", (err, descriptor) => {
-      if (err) {
-        return callback(err);
-      }
-      const ext = path.extname(filePath);
-      if (ext !== ".txt") {
-        callback(new Error("Unsupported dictionary format"));
-      }
-      this.readDictionaryLines(filePath, descriptor, callback);
-    });
-  }
-
-  readDictionaryLines(filePath: string, descriptor: any, callback: Callback) {
-    let lineCount = 0;
-    const lineStream = fs.createReadStream(filePath, { fd: descriptor });
-    readline
-      .createInterface({
-        input: lineStream
-      })
-      .on("line", line => {
-        this.pushWord(line);
-        lineCount++;
-        return;
-      })
-      .on("error", callback)
-      .on("close", () => {
-        callback(null, lineCount);
-      });
+    const onLine = (line: string) => this.pushWord(line);
+    new FileLineReader(filePath, { onLine, ...opts });
   }
 
   /**

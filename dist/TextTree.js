@@ -1,17 +1,25 @@
 "use strict";
-var __importStar = (this && this.__importStar) || function (mod) {
-    if (mod && mod.__esModule) return mod;
-    var result = {};
-    if (mod != null) for (var k in mod) if (Object.hasOwnProperty.call(mod, k)) result[k] = mod[k];
-    result["default"] = mod;
-    return result;
+var __assign = (this && this.__assign) || function () {
+    __assign = Object.assign || function(t) {
+        for (var s, i = 1, n = arguments.length; i < n; i++) {
+            s = arguments[i];
+            for (var p in s) if (Object.prototype.hasOwnProperty.call(s, p))
+                t[p] = s[p];
+        }
+        return t;
+    };
+    return __assign.apply(this, arguments);
 };
 Object.defineProperty(exports, "__esModule", { value: true });
-var fs = __importStar(require("fs"));
-var path = __importStar(require("path"));
-var readline = __importStar(require("readline"));
+var FileLineReader_1 = require("./FileLineReader");
 // Character to insert in tree where a word ends
 var wordTerminatorChar = "\n";
+/**
+ * TextTree initialisation callback
+ * @callback loadCallback
+ * @param {Error} err Node Error
+ * @param {number} lineCount number of lines read
+ */
 var TextTree = /** @class */ (function () {
     /**
      * @constructor
@@ -26,37 +34,11 @@ var TextTree = /** @class */ (function () {
      * @param {loadCallback} callback tree loaded callback
      * @returns {undefined}
      */
-    TextTree.prototype.initialise = function (filePath, callback) {
+    TextTree.prototype.initialise = function (filePath, opts) {
         var _this = this;
         this.tree = {};
-        fs.open(filePath, "r", function (err, descriptor) {
-            if (err) {
-                return callback(err);
-            }
-            var ext = path.extname(filePath);
-            if (ext !== ".txt") {
-                callback(new Error("Unsupported dictionary format"));
-            }
-            _this.readDictionaryLines(filePath, descriptor, callback);
-        });
-    };
-    TextTree.prototype.readDictionaryLines = function (filePath, descriptor, callback) {
-        var _this = this;
-        var lineCount = 0;
-        var lineStream = fs.createReadStream(filePath, { fd: descriptor });
-        readline
-            .createInterface({
-            input: lineStream
-        })
-            .on("line", function (line) {
-            _this.pushWord(line);
-            lineCount++;
-            return;
-        })
-            .on("error", callback)
-            .on("close", function () {
-            callback(null, lineCount);
-        });
+        var onLine = function (line) { return _this.pushWord(line); };
+        new FileLineReader_1.FileLineReader(filePath, __assign({ onLine: onLine }, opts));
     };
     /**
      * Add a word to the text tree

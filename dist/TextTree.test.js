@@ -15,27 +15,30 @@ describe("Text tree", function () {
     });
     describe("initialise", function () {
         it("missing dictionary file", function (done) {
-            tree.initialise("./nonexistant.txt", function (err, lineCount) {
+            var callback = function (err, lineCount) {
                 helpers_1.exist(err);
                 helpers_1.notExist(lineCount);
                 done();
-            });
+            };
+            tree.initialise("./nonexistant.txt", { callback: callback });
         });
         it("text dictionary", function (done) {
-            tree.initialise(helpers_2.dictionaryFilePath, function (err, lineCount) {
+            var callback = function (err, lineCount) {
                 helpers_1.notExist(err);
                 helpers_1.exist(lineCount);
                 helpers_1.isNumber(lineCount);
                 done();
-            });
+            };
+            tree.initialise(helpers_2.dictionaryFilePath, { callback: callback });
         });
     });
     describe("initialised tree", function () {
         beforeEach(function (done) {
             tree = new TextTree_1.TextTree();
-            tree.initialise(helpers_2.dictionaryFilePath, function (err, lineCount) {
+            var callback = function () {
                 done();
-            });
+            };
+            tree.initialise(helpers_2.dictionaryFilePath, { callback: callback });
         });
         describe("getPath", function () {
             it("get the tree path for a valid word", function () {

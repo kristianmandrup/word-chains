@@ -10,24 +10,26 @@ describe("Text tree", () => {
   it("initialise from dictionary", done => {
     tree = new TextTree();
     exist(tree);
-    tree.initialise(dictionaryFilePath, (err: any, lineCount: any) => {
+    const callback = (err: any, lineCount: any) => {
       notExist(err);
       exist(lineCount);
       isNumber(lineCount);
       done();
-    });
+    };
+    tree.initialise(dictionaryFilePath, { callback });
   });
 });
 
 let createAndCheck: any = null;
 
 describe("Word chain solver", () => {
-  beforeEach(done => {
+  beforeAll(done => {
     tree = new TextTree();
     createAndCheck = createChecker(tree, { runBefore, runAfter });
-    tree.initialise(dictionaryFilePath, (err: any, lineCount: any) => {
+    const callback = () => {
       done();
-    });
+    };
+    tree.initialise(dictionaryFilePath, { callback });
   });
 
   it("not create chain for invalid words", () => {
@@ -35,23 +37,19 @@ describe("Word chain solver", () => {
     notExist(chain);
   });
 
-  it("create a word chain", () => {
-    createAndCheck("lead", "gold");
+  it("lead => gold", () => {
+    createAndCheck({ first: "lead", last: "gold" });
   });
 
-  it("create a word chain", () => {
-    createAndCheck("market", "barter");
+  it("ruby => code", () => {
+    createAndCheck({ first: "ruby", last: "code" });
   });
 
-  it("create a word chain", () => {
-    createAndCheck("carry", "sough");
+  it("travel => market", () => {
+    createAndCheck({ first: "travel", last: "market" });
   });
 
-  it("create a word chain", () => {
-    createAndCheck("bread", "table");
-  });
-
-  it("create a word chain", () => {
-    createAndCheck("travel", "market");
-  });
+  // it("create a word chain from pair", () => {
+  //   createAndCheck({ pair: ["travel", "market"] });
+  // });
 });

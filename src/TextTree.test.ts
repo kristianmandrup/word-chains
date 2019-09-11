@@ -26,29 +26,32 @@ describe("Text tree", () => {
 
   describe("initialise", () => {
     it("missing dictionary file", done => {
-      tree.initialise("./nonexistant.txt", (err: any, lineCount: any) => {
+      const callback = (err: any, lineCount: any) => {
         exist(err);
         notExist(lineCount);
         done();
-      });
+      };
+      tree.initialise("./nonexistant.txt", { callback });
     });
 
     it("text dictionary", done => {
-      tree.initialise(dictionaryFilePath, (err: any, lineCount: any) => {
+      const callback = (err: any, lineCount: any) => {
         notExist(err);
         exist(lineCount);
         isNumber(lineCount);
         done();
-      });
+      };
+      tree.initialise(dictionaryFilePath, { callback });
     });
   });
 
   describe("initialised tree", () => {
     beforeEach(done => {
       tree = new TextTree();
-      tree.initialise(dictionaryFilePath, (err: any, lineCount: any) => {
+      const callback = () => {
         done();
-      });
+      };
+      tree.initialise(dictionaryFilePath, { callback });
     });
 
     describe("getPath", () => {

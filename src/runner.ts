@@ -1,15 +1,20 @@
 import { TextTree } from "./TextTree";
 import { runBefore, runAfter } from "./effects";
-import { createChecker } from "./helpers";
+import { createPairsChecker } from "./helpers";
 
-export const run = ({ file, first, last }: any = {}) => {
+export const checkerFor = ({ dictFile, callback }: any = {}) => {
+  if (!dictFile) {
+    throw Error("checkerFor: Missing dictFile");
+  }
   const tree = new TextTree();
-  const createAndCheck = createChecker(tree, { runBefore, runAfter });
-  tree.initialise(file, (err: any, lineCount: any) => {
+  const pairsChecker = createPairsChecker(tree, { runBefore, runAfter });
+  const initCb = (err: any, lineCount: any) => {
     if (err) {
       throw err;
     }
-    console.log(`file: ${file} :: words ${lineCount}`);
-    createAndCheck(first, last);
-  });
+    console.log(`dictionary: ${dictFile} :: words ${lineCount}`);
+
+    callback(pairsChecker);
+  };
+  tree.initialise(dictFile, { callback: initCb });
 };

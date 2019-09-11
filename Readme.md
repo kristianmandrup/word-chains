@@ -44,13 +44,46 @@ Time:        2.583s, estimated 3s
 
 ### CLI runner
 
-`$ ./word-chain --file ./data/50kwords.txt --first cat --last dog`
+### first and last words
+
+`$ ./word-chain --dict-file ./data/50kwords.txt --first cat --last dog`
 
 Example:
 
 ```bash
-./word-chain --file ./data/50kwords.txt --first cat --last dog
+./word-chain --dict-file ./data/50kwords.txt --first cat --last dog
 file: ./data/50kwords.txt :: words 49028
 cat-dog
 4 cat,cot,dot,dog :: time: 0 ms
 ```
+
+### pairs
+
+`$ ./word-chain --file ./data/50kwords.txt --pairs cat,dog`
+
+Example:
+
+```bash
+./word-chain --dict-file ./data/50kwords.txt --pairs cat,dog
+file: ./data/50kwords.txt :: words 49028
+cat-dog
+4 cat,cot,dot,dog :: time: 0 ms
+```
+
+### word pair file
+
+`$ ./word-chain --file ./data/50kwords.txt --pair-file ./data/wordpairs.txt`
+
+Example:
+
+````bash
+./word-chain --dict-file ./data/50kwords.txt --pair-file ./data/wordpairs.txt
+loading word pairs from word pair file ./data/wordpairs.txt
+dictionary: ./data/50kwords.txt :: words 49028
+cat => dog
+4 cat,cot,dot,dog :: time: 0 ms
+lead => gold
+4 lead,load,goad,gold :: time: 0 ms
+ruby => code
+7 ruby,rube,cube,lube,lobe,lode,code :: time: 0 ms```
+````

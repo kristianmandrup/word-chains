@@ -12,7 +12,7 @@ exports.runAfter = function (beforeTime, _a) {
     var _b = _a === void 0 ? {} : _a, chain = _b.chain, first = _b.first, last = _b.last;
     var time = new Date().getTime();
     var diffTime = time - beforeTime;
-    var chainWrds = first + "-" + last;
+    var chainWrds = first + " => " + last;
     var chainLength = chain.length;
     var chainComma = chain.join(",");
     console.log(chainWrds);
