@@ -1,5 +1,17 @@
-export const exist = (value: any) => expect(value).toBeDefined();
-export const notExist = (value: any) => expect(value).not.toBeDefined();
+import * as path from "path";
+import { wordChain } from "./word-chain";
+
+export const dataFilePath = path.join(__dirname, "../data");
+const dictionaryFile = "50kwords.txt";
+
+export const dictionaryFilePath = path.join(dataFilePath, dictionaryFile);
+
+const noValue = (value: any) => value === null || value === undefined;
+
+export const exist = (value: any) => expect(noValue(value)).toBeFalsy();
+export const notExist = (value: any) => {
+  expect(noValue(value)).toBeTruthy();
+};
 
 export const isEqual = (value: any, checkValue: any) =>
   expect(value).toEqual(checkValue);
@@ -15,3 +27,31 @@ export const hasLength = (value: any, len: number) => {
 
 export const isTrue = (value: any) => expect(value).toBeTruthy();
 export const isFalse = (value: any) => expect(value).toBeFalsy();
+
+export const checkersFor = (chain: any) => {
+  const isChain = () => {
+    exist(chain);
+    isArray(chain);
+  };
+
+  const checkFirst = (word: string) => isEqual(chain.shift(), word);
+  const checkLast = (word: string) => isEqual(chain.pop(), word);
+
+  const checkTerminators = (first: string, last: string) => {
+    console.log("checkTerminators", { first, last });
+    isChain();
+    checkFirst(first);
+    checkLast(last);
+  };
+
+  return { isChain, checkFirst, checkLast, checkTerminators };
+};
+
+export const createChecker = (textTree: any) => (
+  first: string,
+  last: string
+) => {
+  const chain = wordChain(textTree, first, last);
+  const { checkTerminators } = checkersFor(chain);
+  return checkTerminators;
+};

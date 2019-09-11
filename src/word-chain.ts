@@ -25,6 +25,11 @@ export const wordChain = (
 ) => {
   const fromWord = startWord.toLowerCase();
   const toWord = endWord.toLowerCase();
+  if (!textTree) {
+    console.error("wordChain", { textTree, startWord, endWord });
+    throw new Error("wordChain: Missing TextTree as first argument");
+  }
+
   if (
     fromWord.length === toWord.length &&
     textTree.hasWord(fromWord) &&
@@ -33,6 +38,21 @@ export const wordChain = (
     return buildWordChain(textTree, [fromWord], toWord);
   }
   return null;
+};
+
+const getCandidates = (
+  textTree: TextTree,
+  fromWord: string,
+  targetWord: string
+) => {
+  // Try optimistic transformation strategy (match a target character)
+  let candidates = optimisticTransformStrategy(textTree, fromWord, targetWord);
+
+  // Fall back to brute force strategy (change any character)
+  if (!candidates.length) {
+    candidates = bruteForceStrategy(textTree, fromWord, targetWord);
+  }
+  return candidates;
 };
 
 /**
@@ -49,27 +69,23 @@ const buildWordChain = (
   targetWord: string
 ): any => {
   const fromWord = lastElement(chain);
-  // Handle complete chain case
   if (fromWord === targetWord) {
     return chain;
   }
-  // Abandon attempts that have grown too long
+  // Abort if chain is too long
   if (chain.length > CHAIN_LIMIT) {
     return null;
   }
 
-  // Attempt "optimistic" transformation strategy (match a target character)
-  let candidates = optimistXform(textTree, fromWord, targetWord);
-  // Fall back to "brute force" strategy (change any character)
-  if (!candidates.length) {
-    candidates = bruteXform(textTree, fromWord, targetWord);
-  }
+  let candidates = getCandidates(textTree, fromWord, targetWord);
 
-  // Limit candidates to try ("lucky" candidates will be used first)
+  // Limit candidates to try lucky candidates will be used first)
   const tryEntries = Math.min(candidates.length, CANDIDATE_LIMIT);
+
   // Extend word chain, attempting with each candidate word
   for (let idx = 0; idx < tryEntries; ++idx) {
     const newWord = candidates[idx];
+
     // Only add words not already in chain
     if (chain.indexOf(newWord) < 0) {
       const newChain = buildWordChain(
@@ -77,7 +93,8 @@ const buildWordChain = (
         chain.concat([newWord]),
         targetWord
       );
-      // Validate new chain is successful
+
+      // Check if new chain is successful
       if (newChain) {
         return newChain;
       }
@@ -96,7 +113,7 @@ const buildWordChain = (
  * @param {string} toWord target word
  * @returns {Array} list of "candidate" words
  */
-export const optimistXform = (
+export const optimisticTransformStrategy = (
   textTree: TextTree,
   fromWord: string,
   toWord: string
@@ -124,7 +141,7 @@ export const optimistXform = (
  * @param {string} toWord target word
  * @returns {Array} list of "candidate" words
  */
-export const bruteXform = (
+export const bruteForceStrategy = (
   textTree: TextTree,
   fromWord: string,
   _toWord?: string
@@ -150,10 +167,6 @@ export const bruteXform = (
   }
   return candidates;
 };
-
-// TODO transform: attempt to extend word by a letter
-
-// TODO transform: attempt to reduce word by a letter
 
 /**
  * Return a copy of the last item in an aray
