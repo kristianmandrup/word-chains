@@ -18,6 +18,12 @@ node
 
 Downloads all dependencies
 
+## Compile
+
+Compiles typescript `.ts` files in `src` folder to `.js` files in `dist` folder using `tsconfig.json` compile configuration
+
+`$ tsc`
+
 ## Test
 
 To run tests
@@ -39,3 +45,12 @@ Time:        2.583s, estimated 3s
 ### CLI runner
 
 `$ ./word-chain --file ./data/50kwords.txt --first cat --last dog`
+
+Example:
+
+```bash
+./word-chain --file ./data/50kwords.txt --first cat --last dog
+file: ./data/50kwords.txt :: words 49028
+cat-dog
+4 cat,cot,dot,dog :: time: 0 ms
+```
