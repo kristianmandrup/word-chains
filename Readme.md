@@ -36,4 +36,6 @@ Snapshots:   0 total
 Time:        2.583s, estimated 3s
 ```
 
-###
+### CLI runner
+
+`$ ./word-chain --file ./data/50kwords.txt --first cat --last dog`

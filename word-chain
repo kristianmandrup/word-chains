@@ -1,0 +1,6 @@
+#!/usr/bin/env node
+
+const argv = require('yargs').argv
+const { run } = require('./dist/runner')
+
+run(argv)

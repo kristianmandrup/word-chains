@@ -53,7 +53,7 @@ export const createChecker = (textTree: any, opts: any = {}) => (
   const { runBefore, runAfter } = opts;
   const beforeResult = runBefore && runBefore({ first, last });
   const chain = wordChain(textTree, first, last);
-  runAfter && runAfter(beforeResult, { first, last });
+  chain && runAfter && runAfter(beforeResult, { chain, first, last });
   const { checkTerminators } = checkersFor(chain);
   return checkTerminators;
 };
