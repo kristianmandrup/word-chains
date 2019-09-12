@@ -79,7 +79,7 @@ const buildWordChain = (
 
   let candidates = getCandidates(textTree, fromWord, targetWord);
 
-  // Limit candidates to try lucky candidates will be used first)
+  // Limit candidates to try
   const tryEntries = Math.min(candidates.length, CANDIDATE_LIMIT);
 
   // Extend word chain, attempting with each candidate word
