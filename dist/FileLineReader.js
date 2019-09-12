@@ -60,3 +60,6 @@ var FileLineReader = /** @class */ (function () {
     return FileLineReader;
 }());
 exports.FileLineReader = FileLineReader;
+exports.createFileLineReader = function (filePath, opts) {
+    return new FileLineReader(filePath, opts);
+};

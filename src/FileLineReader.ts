@@ -60,3 +60,6 @@ export class FileLineReader {
       });
   }
 }
+
+export const createFileLineReader = (filePath: string, opts: any) =>
+  new FileLineReader(filePath, opts);

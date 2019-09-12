@@ -1,7 +1,7 @@
 #!/usr/bin/env node
 
 const argv = require('yargs').argv
-const { FileLineReader } = require('./dist/FileLineReader')
+const { createFileLineReader } = require('./dist/FileLineReader')
 const { checkerFor } = require('./dist/runner')
 const { dictFile, first, last, pair, pairFile } = argv
 
@@ -20,7 +20,7 @@ if (pairFile) {
         pairs.push(words);
         // console.log(pairs)
     }
-    new FileLineReader(pairFile, { onLine });
+    createFileLineReader(pairFile, { onLine });
 }
 
 const callback = (pairsChecker) => {

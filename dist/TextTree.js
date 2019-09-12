@@ -38,7 +38,7 @@ var TextTree = /** @class */ (function () {
         var _this = this;
         this.tree = {};
         var onLine = function (line) { return _this.pushWord(line); };
-        new FileLineReader_1.FileLineReader(filePath, __assign({ onLine: onLine }, opts));
+        FileLineReader_1.createFileLineReader(filePath, __assign({ onLine: onLine }, opts));
     };
     /**
      * Add a word to the text tree

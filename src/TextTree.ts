@@ -1,4 +1,4 @@
-import { FileLineReader } from "./FileLineReader";
+import { FileLineReader, createFileLineReader } from "./FileLineReader";
 
 // Character to insert in tree where a word ends
 const wordTerminatorChar = "\n";
@@ -29,7 +29,7 @@ export class TextTree {
   initialise(filePath: string, opts: any) {
     this.tree = {};
     const onLine = (line: string) => this.pushWord(line);
-    new FileLineReader(filePath, { onLine, ...opts });
+    createFileLineReader(filePath, { onLine, ...opts });
   }
 
   /**
